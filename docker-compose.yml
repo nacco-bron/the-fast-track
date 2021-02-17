@@ -1,5 +1,13 @@
 version: '3'
 
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  postgres-database:
+    driver: local
+
 services:
     php:
         container_name: php
@@ -20,6 +28,8 @@ services:
             - ./${APP_NAME}/.env
         depends_on:
             - database
+        networks:
+            - backend
     database:
         container_name: database
         image: postgres:13
@@ -28,3 +38,7 @@ services:
             POSTGRES_PASSWORD: main
             POSTGRES_DB: main
         ports: ['15432:5432']
+        volumes:
+            - postgres-database:/var/lib/postgresql/data
+        networks:
+            - backend
