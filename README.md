@@ -31,10 +31,11 @@ docker-compose up -d
 ```
 Symfony Local Server を起動
 ```
-docker-compose exec php symfony serve --allow-http --no-tls
+docker-compose exec php symfony server:start -d
 ```
 
 ブラウザでwebサイトを開く (symfony open:local の代替)
+
 http://localhost:8000/
 
 ## ステップ 2: 作成するプロジェクトについて(スキップ)
@@ -52,10 +53,11 @@ docker-compose exec php bash -c 'cd /usr/src/ && symfony new ${APP_NAME} --versi
 
 Symfony Local Server を再起動
 ```
-docker-compose exec php symfony serve --allow-http --no-tls
+docker-compose exec php symfony server:start -d
 ```
 
 ブラウザでwebサイトを開く (symfony open:local の代替)
+
 http://localhost:8000/
 
 
@@ -67,7 +69,8 @@ docker-compose exec php COMMAND
 
 
 
-作業環境の再構築
+## 作業環境の再構築
+
 ```
 docker-compose down --rmi all --volumes --remove-orphans
 docker-compose up -d
