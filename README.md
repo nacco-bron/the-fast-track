@@ -67,7 +67,19 @@ docker-compose exec php COMMAND
 ```
 とする
 
+## ステップ 8: データ構造の説明
 
+### 8.2 Symfonyの環境変数の規約を理解する
+
+.envファイルのDATABASE_URLはDockerのサービス名指定での接続に変更
+
+```
+--- a/guestbook/.env
++++ b/guestbook/.env
+
+-DATABASE_URL="postgresql://db_user:db_password@127.0.0.1:5432/db_name?serverVersion=13&charset=utf8"
++DATABASE_URL="postgresql://main:main@database:5432/main?serverVersion=13&charset=utf8"
+```
 
 ## 作業環境の再構築
 
