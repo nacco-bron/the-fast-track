@@ -16,8 +16,8 @@ services:
         environment:
             APP_NAME: ${APP_NAME}
             SYMFONY_VERSION: ${SYMFONY_VERSION}
-        # env_file:
-        #     - ./${APP_NAME}/.env
+        env_file:
+            - ./${APP_NAME}/.env
         depends_on:
             - database
     database:
