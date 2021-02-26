@@ -81,6 +81,87 @@ docker-compose exec php COMMAND
 +DATABASE_URL="postgresql://main:main@database:5432/main?serverVersion=13&charset=utf8"
 ```
 
+## ステップ 9: 管理者用のバックエンドをセットアップする
+
+### 9.1 EasyAdmin を設定する
+
+テキストではEasyAdmin2系のインストール、設定手順の記載があるが、
+EasyAdmin3系に変更
+
+```
+docker-compose exec php symfony composer req "admin:^3"
+```
+
+config/packages/easy_admin.yamlの編集の代わりにMakerBundleのコマンドを使用して
+DashBoardとCRUD Controllerを作成
+
+```
+docker-compose exec php bin/console make:admin:dashboard
+docker-compose exec php bin/console make:admin:crud
+```
+対話形式で
+```
+App\Entity\Comment
+App\Entity\Conference
+```
+のCRUD Controllerを作成
+
+DashBoardにCRUD Controllerへのリンクを追加
+
+/guestbook/src/Controller/Admin/DashboardController.php
+```php
++use App\Entity\Conference;
++use App\Entity\Comment;
+
+
+    public function configureMenuItems(): iterable
+    {
+        yield MenuItem::linktoDashboard('Dashboard', 'fa fa-home');
++        yield MenuItem::linkToCrud('Conference', 'fas fa-users', Conference::class);
++        yield MenuItem::linkToCrud('Comment', 'fas fa-comment', Comment::class);
+    }
+```
+
+CRUD Controllerを編集してアソシエーションフィールドを追加
+
+/guestbook/src/Controller/Admin/CommentCrudController.php
+```php
++use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
++use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
++use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
++use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+
++    public function configureFields(string $pageName): iterable
++    {
++        return [
++            AssociationField::new('conference'),
++            TextField::new('author'),
++            TextareaField::new('text'),
++            TextField::new('email'),
++            DateTimeField::new('createdAt'),
++            TextField::new('photoFilename'),
++        ];
++    }
+```
+
+/guestbook/src/Controller/Admin/ConferenceCrudController.php
+```php
++use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
++use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
++use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
++use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+
++    public function configureFields(string $pageName): iterable
++    {
++        return [
++            TextField::new('city'),
++            TextField::new('year'),
++            BooleanField::new("isInternational"),
++            AssociationField::new("comments"),
++        ];
++    }
+```
+
 ## 作業環境の再構築
 
 ```
